@@ -1,8 +1,59 @@
-<div class="article-container">
-    <div class="article-header">
-        <h2>{{ title }}</h2>
-    </div>
+<div id="article-container" class="article-container" x-data="{ 
+        processContent() {
+            this.$nextTick(() => {
+                // Process wiki links
+                const wikiLinkRegex = /\[\[(.*?)(?:\|(.*?))?\]\]/g;
+                const articleContent = document.querySelector('.article-content');
+                if (!articleContent) return;
+                
+                const html = articleContent.innerHTML;
+                const processedHtml = html.replace(wikiLinkRegex, (match, link, alias) => {
+                    const displayText = alias || link;
+                    return `<button hx-get='http://localhost:5000/components/article/${link.trim()}' 
+                                   hx-target='#article-container' 
+                                   hx-swap='outerHTML' 
+                                   class='obsidian-link'>${displayText}</button>`;
+                });
+                
+                articleContent.innerHTML = processedHtml;
+            });
+        }
+     }" x-init="processContent()">
     <div class="article-content">
         {{ content }}
     </div>
+    <style>
+        .obsidian-link {
+            color: #7B68EE;
+            text-decoration: none;
+            border-bottom: 1px dashed #7B68EE;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            padding: 0;
+            font-size: inherit;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .obsidian-link:hover {
+            background-color: rgba(123, 104, 238, 0.1);
+        }
+
+        .footnote-ref {
+            color: #FF5722;
+        }
+
+        .footnotes {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .obsidian-image {
+            max-width: 100%;
+            display: block;
+            margin: 1rem 0;
+        }
+    </style>
 </div>
