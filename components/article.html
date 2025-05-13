@@ -9,7 +9,9 @@
                 const html = articleContent.innerHTML;
                 const processedHtml = html.replace(wikiLinkRegex, (match, link, alias) => {
                     const displayText = alias || link;
-                    return `<button hx-get='http://localhost:5000/components/article/${link.trim()}' 
+                    // Encode the filename to handle special characters
+                    const encodedLink = encodeURIComponent(link.trim());
+                    return `<button hx-get='/components/article/${encodedLink}' 
                                    hx-target='#article-container' 
                                    hx-swap='outerHTML' 
                                    class='obsidian-link'>${displayText}</button>`;

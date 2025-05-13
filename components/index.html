@@ -15,7 +15,7 @@
             font-family: 'Comic Neue', cursive;
             background-color: #fffbf5;
             color: #212121;
-            margin: 3em 5%;
+            margin: 2em 5%;
             display: flex;
             flex-direction: row;
             flex: 1 1 auto;
@@ -27,11 +27,13 @@
 <body>
     <div id="left-bar">
         <h1>cleo.dev</h1>
-        <div id="navbar" hx-get="http://localhost:5000/components/navbar" hx-trigger="load"></div>
+        <div id="navbar" hx-get="/components/navbar" hx-trigger="load"></div>
     </div>
     <div id="main-content">
-        <!-- Load article component - Fixed URL path -->
-        <div id="article-view" hx-get="http://localhost:5000/components/article/home" hx-trigger="load"></div>
+        <div>
+            <!-- Load article component - Fixed URL path -->
+            <div id="article-container" hx-get="/components/article/home" hx-trigger="load"></div>
+        </div>
     </div>
 </body>
 

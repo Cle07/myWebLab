@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "1401aa2c8f477425",
+      "type": "file",
+      "file": "Blog/home.md",
+      "styleAttributes": {},
+      "x": -200,
+      "y": -200,
+      "width": 400,
+      "height": 420,
+      "color": "1"
+    },
+    {
+      "id": "d30c8d301536b681",
+      "type": "file",
+      "file": "Blog/digital garden.md",
+      "styleAttributes": {},
+      "x": -280,
+      "y": -740,
+      "width": 560,
+      "height": 400
+    },
+    {
+      "id": "ad8df3e7ed950756",
+      "type": "file",
+      "file": "Blog/Digitization of Meillassoux' thesis.md",
+      "styleAttributes": {},
+      "x": 40,
+      "y": 360,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "id": "f18e7fc24a4a9d2c",
+      "type": "file",
+      "file": "Blog/The jhanas of Farīd ud-Dīn.md",
+      "styleAttributes": {},
+      "x": -440,
+      "y": 360,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "id": "fb3b65685ecca749",
+      "type": "file",
+      "file": "Blog/Historical emergence of duality.md",
+      "styleAttributes": {},
+      "x": -1000,
+      "y": -400,
+      "width": 400,
+      "height": 400
+    }
+  ],
+  "edges": [
+    {
+      "id": "8b3cf717c81ba95c",
+      "fromNode": "1401aa2c8f477425",
+      "fromSide": "top",
+      "toNode": "d30c8d301536b681",
+      "toSide": "bottom"
+    },
+    {
+      "id": "e4d1dcbeff60a22a",
+      "fromNode": "1401aa2c8f477425",
+      "fromSide": "bottom",
+      "toNode": "f18e7fc24a4a9d2c",
+      "toSide": "top"
+    },
+    {
+      "id": "75e96e88faec7505",
+      "fromNode": "1401aa2c8f477425",
+      "fromSide": "bottom",
+      "toNode": "ad8df3e7ed950756",
+      "toSide": "top"
+    }
+  ],
+  "metadata": {}
+}
