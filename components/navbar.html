@@ -1,0 +1,33 @@
+<style>
+    /* Styling for navbar */
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .navbar-link {
+        text-decoration: none;
+        color: #212121;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    .navbar-link:hover {
+        text-decoration: underline;
+    }
+</style>
+<div>
+    <hr style="border: 2px solid #212121;">
+    <div x-data="{ links: { 'Home': '/', 'About': '/about', 'Contact': '/contact' } }">
+        <ul>
+            <template x-for="(url, name) in links" :key="name">
+                <li><a :href="url" class="navbar-link" x-text="name"></a></li>
+            </template>
+        </ul>
+    </div>
+    <hr style="border: 2px solid #212121;">
+</div>

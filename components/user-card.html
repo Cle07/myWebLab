@@ -1,0 +1,14 @@
+<div x-data="{ name: '{{ name }}', role: '{{ role }}', expanded: false }">
+    <div class="user-card">
+        <h3 x-text="name"></h3>
+        <p x-text="role"></p>
+        <button x-on:click="expanded = !expanded">
+            <span x-text="expanded ? 'Hide Details' : 'Show Details'"></span>
+        </button>
+
+        <div x-show="expanded" x-transition class="user-details">
+            <p>This is additional information about <span x-text="name"></span></p>
+            <p>Contact: {{ email }}</p>
+        </div>
+    </div>
+</div>

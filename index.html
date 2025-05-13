@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Use CDN links for development to ensure they load properly -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=IBM+Plex+Sans:ital,wdth,wght@0,75,100..700;1,75,100..700&display=swap');
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fffbf5;
+            color: #212121;
+            margin: 3em 22%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>cleo.dev</h1>
+    <div id="navbar" hx-get="http://localhost:5000/components/navbar" hx-trigger="load"></div>
+    <div>
+        <!-- Load article component - Fixed URL path -->
+        <div id="article-container" hx-get="http://localhost:5000/components/article/sample" hx-trigger="load"></div>
+    </div>
+</body>
+
+</html>
