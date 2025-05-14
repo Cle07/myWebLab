@@ -1,34 +1,37 @@
-<div id="article-container" class="article-container" x-data="{ 
+<div
+    id="article-container"
+    class="article-container"
+    x-data="{
         processContent() {
             this.$nextTick(() => {
                 // Process wiki links
                 const wikiLinkRegex = /\[\[(.*?)(?:\|(.*?))?\]\]/g;
                 const articleContent = document.querySelector('.article-content');
                 if (!articleContent) return;
-                
+
                 const html = articleContent.innerHTML;
                 const processedHtml = html.replace(wikiLinkRegex, (match, link, alias) => {
                     const displayText = alias || link;
                     // Encode the filename to handle special characters
                     const encodedLink = encodeURIComponent(link.trim());
-                    return `<button hx-get='/components/article/${encodedLink}' 
-                                   hx-target='#article-container' 
-                                   hx-swap='outerHTML' 
+                    return `<button hx-get='/components/article/${encodedLink}'
+                                   hx-target='#article-container'
+                                   hx-swap='outerHTML'
                                    class='obsidian-link'>${displayText}</button>`;
                 });
-                
+
                 articleContent.innerHTML = processedHtml;
             });
         }
-     }" x-init="processContent()">
-    <div class="article-content">
-        {{ content }}
-    </div>
+     }"
+    x-init="processContent()"
+>
+    <div class="article-content">{{ content }}</div>
     <style>
         .obsidian-link {
-            color: #7B68EE;
+            color: #7b68ee;
             text-decoration: none;
-            border-bottom: 1px dashed #7B68EE;
+            border-bottom: 1px dashed #7b68ee;
             background: none;
             border-top: none;
             border-left: none;
@@ -41,10 +44,11 @@
 
         .obsidian-link:hover {
             background-color: rgba(123, 104, 238, 0.1);
+            font-weight: bold;
         }
 
         .footnote-ref {
-            color: #FF5722;
+            color: #ff5722;
         }
 
         .footnotes {

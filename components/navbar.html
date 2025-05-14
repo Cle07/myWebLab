@@ -10,14 +10,23 @@
     }
 
     .navbar-link {
-        text-decoration: none;
+        background: none;
+        border: none;
         color: #212121;
         font-weight: bold;
         font-size: 1.2em;
+        font-family: inherit;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
     }
 
     .navbar-link:hover {
         text-decoration: underline;
+    }
+    
+    .navbar-link:focus {
+        color: #7b68ee;
     }
 
     ul {
@@ -29,15 +38,43 @@
         align-items: center;
         gap: 10px;
     }
+
+    #bar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
-<div>
-    <hr style="border: 2px solid #212121;">
-    <div x-data="{ links: { 'Home': '/', 'About': '/about', 'Contact': '/contact' } }">
+<div id="bar-container">
+    <h1>cleo.dev</h1>
+    <img
+        src="static/line.svg"
+        style="width: auto; height: 70px; margin: 0px 0px"
+    />
+    <div
+        x-data="{ links: { 'Garden': 'home', 'About': 'about', 'Contact': 'contact' } }"
+    >
         <ul>
-            <template id="navbar-list" x-for="(url, name) in links" :key="name">
-                <li><a :href="url" class="navbar-link" x-text="name"></a></li>
+            <template
+                id="navbar-list"
+                x-for="(article, name) in links"
+                :key="name"
+            >
+                <li>
+                    <button
+                        :hx-get="'/components/article/' + article"
+                        hx-target="#article-container"
+                        hx-swap="outerHTML"
+                        class="navbar-link"
+                        x-text="name"
+                    ></button>
+                </li>
             </template>
         </ul>
     </div>
-    <hr style="border: 2px solid #212121;">
+    <img
+        src="static/line.svg"
+        style="width: auto; height: 70px; margin: 0px 0px"
+    />
 </div>
