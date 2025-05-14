@@ -1,15 +1,18 @@
-from flask import Flask, Response, jsonify, render_template
+from robyn import Robyn, ALLOW_CORS
+from robyn.templating import JinjaTemplate
 from urllib.parse import unquote
 from markupsafe import Markup
-from flask_cors import CORS
 import markdown
+import pathlib
 import os
 import re
 
 
-app = Flask(__name__, template_folder="components", static_folder="static")
-# Enable CORS for all routes
-CORS(app)
+app = Robyn(__file__)
+ALLOW_CORS(app, origins=["http://localhost:0.0.0.0/"])
+current_file_path = pathlib.Path(__file__).parent.resolve()
+jinja = JinjaTemplate(os.path.join(current_file_path, "components"))
+app.serve_directory("/static", "static")
 
 
 ##############################################
@@ -17,14 +20,15 @@ CORS(app)
 ##############################################
 
 
-@app.route("/components/navbar", methods=["GET"])
-def navbar_component() -> str:
+@app.get("/components/navbar")
+def navbar_component():
     # Render the navbar component
-    return render_template("navbar.html")
+    return jinja.render_template("navbar.html")
 
 
-@app.route("/components/article/<path:article_id>", methods=["GET"])
-def article_component(article_id) -> str:
+@app.get("/components/article/:article_id")
+def article_component(request):
+    article_id = request.path_params.get("article_id")
     try:
         # URL decode the article_id to handle special characters
         decoded_article_id = unquote(article_id)
@@ -38,9 +42,9 @@ def article_component(article_id) -> str:
         html_content = markdown.markdown(md_content, extensions=["tables"])
         html_content = parse_obsidian_links(html_content)
 
-        return render_template("article.html", content=Markup(html_content))
+        return jinja.render_template("article.html", content=Markup(html_content))
     except TimeoutError as e:
-        return f"Fatal Error : {e}"
+        return {"Fatal Error ": f"{e}"}
 
 
 ##############################################
@@ -48,9 +52,9 @@ def article_component(article_id) -> str:
 ##############################################
 
 
-@app.route("/api/hello", methods=["GET"])
-def hello_api() -> Response:
-    return jsonify({"message": "Hello from the API!"})
+@app.get("/api/hello")
+def hello_api():
+    return {"message": "Hello from the API!"}
 
 
 ##############################################
@@ -58,13 +62,13 @@ def hello_api() -> Response:
 ##############################################
 
 
-@app.route("/", methods=["GET"])
-def index() -> str:
-    return render_template("index.html")
+@app.get("/")
+def index():
+    return jinja.render_template("index.html")
 
 
-@app.route("/about", methods=["GET"])
-def about() -> str:
+@app.get("/about")
+def about():
     try:
         with open("articles/about.md", "r") as file:
             md_content = file.read()
@@ -74,7 +78,7 @@ def about() -> str:
     html_content = markdown.markdown(md_content, extensions=["tables"])
     html_content = parse_obsidian_links(html_content)
 
-    return render_template("article.html", content=Markup(html_content))
+    return jinja.render_template("article.html", content=Markup(html_content))
 
 
 ##############################################
@@ -82,7 +86,7 @@ def about() -> str:
 ##############################################
 
 
-def parse_obsidian_links(html_content) -> str:
+def parse_obsidian_links(html_content):
     """Parse Obsidian-style links in HTML content."""
 
     # Regular expressions for different Obsidian link types
@@ -131,4 +135,4 @@ def parse_obsidian_links(html_content) -> str:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.start(host="0.0.0.0", port=port)
