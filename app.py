@@ -2,18 +2,17 @@ from robyn import Robyn, ALLOW_CORS
 from robyn.templating import JinjaTemplate
 from urllib.parse import unquote
 from markupsafe import Markup
-import markdown
+import markdown as md
 import pathlib
 import os
 import re
 
-
+# Initialisation
 app = Robyn(__file__)
 ALLOW_CORS(app, origins=["http://localhost:0.0.0.0/"])
 current_file_path = pathlib.Path(__file__).parent.resolve()
 jinja = JinjaTemplate(os.path.join(current_file_path, "components"))
 app.serve_directory("/static", "static")
-
 
 ##############################################
 # COMPONENTS
@@ -24,6 +23,55 @@ app.serve_directory("/static", "static")
 def navbar_component():
     # Render the navbar component
     return jinja.render_template("navbar.html")
+
+
+@app.get("/components/palette")
+def palette_component():
+    # Render the palette component
+    return jinja.render_template("palette.html")
+
+
+@app.get("/components/login")
+def login_component():
+    # Render the login component
+    return jinja.render_template("hey")
+
+
+@app.get("/components/user-card")
+def user_card_component():
+    # Render the user card component
+    return jinja.render_template("user-card.html")
+
+
+@app.get("/components/search/:query")
+def palette_search_component(request):
+    query = request.path_params.get("query")
+    ### SEARCH FUNCTIONALITY ###
+    if query == "suggestions":
+        results = [
+            {
+                "title": f"Result for '{query}'",
+                "description": f"This is a match for your search: {query}",
+            },
+            {
+                "title": "Another result",
+                "description": f"Another description related to '{query}'",
+            },
+            {"title": "Third match", "description": f"More content about '{query}'"},
+        ]
+    else:
+        results = [
+            {
+                "title": f"Result for '{query}'",
+                "description": f"This is a match for your search: {query}",
+            },
+            {
+                "title": "Another result",
+                "description": f"Another description related to '{query}'",
+            },
+            {"title": "Third match", "description": f"More content about '{query}'"},
+        ]
+    return jinja.render_template("search-results.html", results=results)
 
 
 @app.get("/components/article/:article_id")
@@ -39,7 +87,7 @@ def article_component(request):
         except FileNotFoundError:
             return f"Article {article_id} not found"
 
-        html_content = markdown.markdown(md_content, extensions=["tables"])
+        html_content = md.markdown(md_content, extensions=["tables"])
         html_content = parse_obsidian_links(html_content)
 
         return jinja.render_template("article.html", content=Markup(html_content))
@@ -52,9 +100,9 @@ def article_component(request):
 ##############################################
 
 
-@app.get("/api/hello")
-def hello_api():
-    return {"message": "Hello from the API!"}
+@app.get("/api/v1/hello")
+def hello_world():
+    return {"response": "Hello World!"}
 
 
 ##############################################
@@ -75,10 +123,15 @@ def about():
     except FileNotFoundError:
         return "About page not found"
 
-    html_content = markdown.markdown(md_content, extensions=["tables"])
+    html_content = md.markdown(md_content, extensions=["tables"])
     html_content = parse_obsidian_links(html_content)
 
     return jinja.render_template("article.html", content=Markup(html_content))
+
+
+@app.get("/lab")
+def lab():
+    return jinja.render_template("lab.html")
 
 
 ##############################################
@@ -131,7 +184,7 @@ def parse_obsidian_links(html_content):
 
 ##############################################
 ##############################################
-##############################################
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

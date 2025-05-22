@@ -1,0 +1,55 @@
+<div x-data="{ results: JSON.parse(decodeURIComponent('{{ results|tojson|urlencode }}')) }">
+    <ul class="results-list">
+        <template x-if="results.length === 0">
+            <li class="no-results">No results found</li>
+        </template>
+        <template x-for="(result, index) in results" :key="index">
+            <li class="result-item">
+                <div class="result-title" x-text="result.title"></div>
+                <div class="result-description" x-text="result.description"></div>
+            </li>
+        </template>
+    </ul>
+</div>
+<style>
+    .results-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 40vh;
+        overflow-y: auto;
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .results-list::-webkit-scrollbar {
+        display: none;
+        /* Chrome, Safari, Opera */
+    }
+
+    .result-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+    }
+
+    .result-item:hover {
+        background-color: #f5f8ff;
+    }
+
+    .result-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    .result-description {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .no-results {
+        padding: 10px;
+        color: #888;
+        font-style: italic;
+    }
+</style>

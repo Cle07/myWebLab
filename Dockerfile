@@ -19,7 +19,7 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies directly
-RUN pip install flask flask-cors markdown markupsafe
+RUN pip install robyn jinja2 markdown markupsafe
 
 # Copy application code
 COPY . .
@@ -40,7 +40,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy built application
 COPY --from=build /app /app
 
-# Start the Flask server directly
+# Start the Robyn server with debug flags
 EXPOSE 5000
 ENV PORT=5000
-CMD ["python", "app.py"]
+CMD ["python", "app.py", "--log-level", "DEBUG", "--fast"]

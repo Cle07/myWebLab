@@ -1,3 +1,35 @@
+<div id="bar-container">
+    <h1>cleo.dev</h1>
+    <img
+        src="/static/line.svg"
+        style="width: auto; height: 70px; margin: 0px 0px"
+    />
+    <div
+        x-data="{ links: { 'Garden': 'home', 'About': 'about', 'Contact': 'contact' } }"
+    >
+        <ul>
+            <template
+                id="navbar-list"
+                x-for="(article, name) in links"
+                :key="name"
+            >
+                <li>
+                    <button
+                        :hx-get="'/components/article/' + article"
+                        hx-target="#article-container"
+                        hx-swap="outerHTML"
+                        class="navbar-link"
+                        x-text="name"
+                    ></button>
+                </li>
+            </template>
+        </ul>
+    </div>
+    <img
+        src="/static/line.svg"
+        style="width: auto; height: 70px; margin: 0px 0px"
+    />
+</div>
 <style>
     /* Styling for navbar */
     ul {
@@ -46,35 +78,3 @@
         justify-content: center;
     }
 </style>
-<div id="bar-container">
-    <h1>cleo.dev</h1>
-    <img
-        src="/static/line.svg"
-        style="width: auto; height: 70px; margin: 0px 0px"
-    />
-    <div
-        x-data="{ links: { 'Garden': 'home', 'About': 'about', 'Contact': 'contact' } }"
-    >
-        <ul>
-            <template
-                id="navbar-list"
-                x-for="(article, name) in links"
-                :key="name"
-            >
-                <li>
-                    <button
-                        :hx-get="'/components/article/' + article"
-                        hx-target="#article-container"
-                        hx-swap="outerHTML"
-                        class="navbar-link"
-                        x-text="name"
-                    ></button>
-                </li>
-            </template>
-        </ul>
-    </div>
-    <img
-        src="/static/line.svg"
-        style="width: auto; height: 70px; margin: 0px 0px"
-    />
-</div>
