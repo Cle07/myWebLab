@@ -43,4 +43,4 @@ COPY --from=build /app /app
 # Start the Robyn server with debug flags
 EXPOSE 5000
 ENV PORT=5000
-CMD ["python", "app.py", "--log-level", "DEBUG", "--fast"]
+CMD ["python", "app.py", "--log-level", "DEBUG", "--compile-rust-path", ".", "--fast"]
