@@ -22,8 +22,8 @@
 
     </div>
     <div x-show="open && query.length <= 0">
-        <div id="suggestions-container" hx-get="/components/search/suggestions" hx-trigger="load"
-            hx-swap="innerHTML transition:true">
+        <div id="suggestions-container" hx-get="/components/search/:suggestions" hx-trigger="load"
+            hx-swap="outerHTML transition:true">
         </div>
     </div>
     <div id="search-results-container" x-show="query.length > 0">
@@ -31,12 +31,12 @@
     </div>
 
 </div>
-<div id="login-container">
-    <svg id="key-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f8fe6" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;">
-        <path
-            d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
-        </path>
+<div id="login-container" hx-get="/components/article/home" hx-trigger="click" hx-target="#main-content"
+    hx-swap="innerHTML transition:true">
+    <svg id="home-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f8fe6" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
     </svg>
 </div>
 <style>
@@ -68,15 +68,20 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 5%;
+        width: 40px;
+        height: 40px;
         font-size: 14px;
         background: rgba(255, 255, 255, 0.6);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         z-index: 1000;
         border: double 8px #4f8fe6;
-        height: 40px;
-        width: 40px;
+        /* Remove width: 5% and set fixed px for perfect centering */
+    }
+
+    #login-container svg {
+        display: block;
+        margin: auto;
     }
 
     #input-container {

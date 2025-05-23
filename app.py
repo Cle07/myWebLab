@@ -45,33 +45,15 @@ def user_card_component():
 
 @app.get("/components/search/:query")
 def palette_search_component(request):
+    """
+    Render the palette search results component based on the query.
+    """
     query = request.path_params.get("query")
     ### SEARCH FUNCTIONALITY ###
-    if query == "suggestions":
-        results = [
-            {
-                "title": f"Result for '{query}'",
-                "description": f"This is a match for your search: {query}",
-            },
-            {
-                "title": "Another result",
-                "description": f"Another description related to '{query}'",
-            },
-            {"title": "Third match", "description": f"More content about '{query}'"},
-        ]
-    else:
-        results = [
-            {
-                "title": f"Result for '{query}'",
-                "description": f"This is a match for your search: {query}",
-            },
-            {
-                "title": "Another result",
-                "description": f"Another description related to '{query}'",
-            },
-            {"title": "Third match", "description": f"More content about '{query}'"},
-        ]
-    return jinja.render_template("search-results.html", results=results)
+
+    return jinja.render_template(
+        "search-results.html", results=palette_search_router(query)
+    )
 
 
 @app.get("/components/article/:article_id")
@@ -112,7 +94,7 @@ def hello_world():
 
 @app.get("/")
 def index():
-    return jinja.render_template("index.html")
+    return jinja.render_template("lab.html")
 
 
 @app.get("/about")
@@ -131,7 +113,7 @@ def about():
 
 @app.get("/lab")
 def lab():
-    return jinja.render_template("lab.html")
+    return jinja.render_template("index.html")
 
 
 ##############################################
@@ -139,7 +121,7 @@ def lab():
 ##############################################
 
 
-def parse_obsidian_links(html_content):
+def parse_obsidian_links(html_content: str) -> str:
     """Parse Obsidian-style links in HTML content."""
 
     # Regular expressions for different Obsidian link types
@@ -180,6 +162,64 @@ def parse_obsidian_links(html_content):
         html_content += footnote_section
 
     return html_content
+
+
+def palette_search_router(query: str) -> list[dict]:
+    """
+    Search for a query in the palette.
+    This function should return a JSON that look like :
+    [
+        {
+            "type": "article",
+            "title": "Result 1",
+            "description": "Description for result 1"
+        },
+        {
+            "type": "other",
+            "title": "Result 2",
+            "description": "Description for result 2"
+        }
+    ]
+
+    It includes the types articles and commands.
+    """
+
+    if query.startswith(":"):
+        return handle_palette_commands(query)
+    else:
+        return handle_palette_articles(query)
+
+
+def handle_palette_commands(query: str) -> list[dict]:
+    command = query[1:]
+    # Handle command search
+    return [
+        {
+            "type": "command",
+            "title": f"First Command: {command}",
+            "description": f"Description for command {command}",
+        },
+        {
+            "type": "command",
+            "title": f"Second Command: {command}",
+            "description": f"Description for command {command}",
+        },
+        {
+            "type": "command",
+            "title": f"Third Command: {command}",
+            "description": f"Description for command {command}",
+        },
+    ]
+
+
+def handle_palette_articles(query: str) -> list[dict]:
+    return [
+        {
+            "type": "article",
+            "title": f"Article: {query}",
+            "description": f"Description for article {query}",
+        }
+    ]
 
 
 ##############################################

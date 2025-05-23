@@ -1,7 +1,4 @@
-<div
-    id="article-container"
-    class="article-container"
-    x-data="{
+<div id="article-container" class="article-container" x-data="{
         processContent() {
             this.$nextTick(() => {
                 // Process wiki links
@@ -16,16 +13,14 @@
                     const encodedLink = encodeURIComponent(link.trim());
                     return `<button hx-get='/components/article/${encodedLink}'
                                    hx-target='#article-container'
-                                   hx-swap='outerHTML'
+                                   hx-swap='outerHTML transition:true'
                                    class='obsidian-link'>${displayText}</button>`;
                 });
 
                 articleContent.innerHTML = processedHtml;
             });
         }
-     }"
-    x-init="processContent()"
->
+     }" x-init="processContent()">
     <div class="article-content">{{ content }}</div>
 </div>
 <style>
@@ -63,6 +58,5 @@
         margin: 1rem 0;
     }
 
-    ul {
-    }
+    ul {}
 </style>
