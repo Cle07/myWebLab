@@ -7,4 +7,8 @@
 
 - Switched from `flask` to `robyn`, transfer to `FastAPI` will be easier if `robyn` is not maintained.
 - Added /lab endpoint with new design.
-- New Search Palette component.
+- Added the Search Palette component.
+
+# 0.1.1.1
+
+- Added the skeleton for importing Rust module in `app.py`
