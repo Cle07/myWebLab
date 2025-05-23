@@ -4,8 +4,8 @@
             <li class="no-results">No results found</li>
         </template>
         <template x-for="(result, index) in results" :key="index">
-            <li class="result-item">
-
+            <li class="result-item" :hx-get="`/components/article/${encodeURIComponent(result.title)}`"
+                hx-target="#main-content" hx-trigger="click" hx-swap="innerHTML transition:true " @click="open=!open">
                 <div class="result-title" x-text="result.title"></div>
                 <div class="result-description" x-text="result.description"></div>
             </li>

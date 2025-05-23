@@ -3,19 +3,44 @@ from robyn.templating import JinjaTemplate
 from robyn.authentication import BearerGetter, Identity
 from urllib.parse import unquote
 from markupsafe import Markup
+from rich.panel import Panel
+from rich import print
 import markdown as md
 import pathlib
+
+
 import os
 import re
 
-# Initialisation du backend Rust
+# Initialisation et test du backend Rust
 try:
-    from backend import square
+    from backend import fuzzy_search
 
-    assert square(5) == 25, "Square function is not working correctly"
-    print(f"Square imported successfully. Square(5) = {square(5)}")
+    fuzzy_search_test_results = fuzzy_search("jhana", False, False)
+    fuzzy_search_logged_out_test_commands = fuzzy_search("lo", True, False)
+    fuzzy_search_logged_in_test_commands = fuzzy_search("lo", True, True)
+
+    assert fuzzy_search_test_results[1] == "home.md"
+    assert fuzzy_search_logged_out_test_commands[0] == "login"
+    assert fuzzy_search_logged_in_test_commands[0] == "logout"
+
+    # Create a success panel with rich to display the test results
+    print(
+        "\n",
+        Panel.fit(
+            "\n[bold][uu]Fuzzysearch tests results :[/uu][/bold]\n\n"
+            f"✅ [bold]Search test results:[/bold] {fuzzy_search_test_results}\n"
+            f"✅ [bold]Logged out test commands:[/bold] {fuzzy_search_logged_out_test_commands}\n"
+            f"✅ [bold]Logged in test commands:[/bold] {fuzzy_search_logged_in_test_commands}\n",
+            subtitle="Rust backend successfully initiated!",
+            subtitle_align="center",
+            title="🦀 [bold]Backend Status[/bold] 🦀",
+            border_style="red",
+        ),
+        "\n",
+    )
 except ImportError as e:
-    print(f"Failed to import square: {e}")
+    print(f"Failed to import: {e}")
 
 # Initialisation du serveur Robyn
 app = Robyn(__file__)
@@ -59,8 +84,6 @@ def palette_search_component(request):
     Render the palette search results component based on the query.
     """
     query = request.path_params.get("query")
-    ### SEARCH FUNCTIONALITY ###
-
     return jinja.render_template(
         "search-results.html", results=palette_search_router(query)
     )
@@ -138,12 +161,10 @@ def auth(request: Request):
 ##############################################
 
 
-# Hardcoded secret key for testing
-TEST_SECRET_KEY = "cleosupersecretkey-2025"
-
-
 class BasicAuthHandler(AuthenticationHandler):
     def authenticate(self, request: Request):
+        # Hardcoded secret key for testing
+        TEST_SECRET_KEY = "cleosupersecretkey-2025"
         token = self.token_getter.get_token(request)
         # Accept the hardcoded key as a Bearer token
         if token == TEST_SECRET_KEY:
@@ -225,34 +246,51 @@ def palette_search_router(query: str) -> list[dict]:
 
 def handle_palette_commands(query: str) -> list[dict]:
     command = query[1:]
-    # Handle command search
-    return [
-        {
-            "type": "command",
-            "title": f"First Command: {command}",
-            "description": f"Description for command {command}",
-        },
-        {
-            "type": "command",
-            "title": f"Second Command: {command}",
-            "description": f"Description for command {command}",
-        },
-        {
-            "type": "command",
-            "title": f"Third Command: {command}",
-            "description": f"Description for command {command}",
-        },
-    ]
+    search_results = fuzzy_search(command, True, False)
+    if command == "suggestions":
+        return [
+            {
+                "type": "command",
+                "title": "Lorem Ipsum",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            {
+                "type": "command",
+                "title": "Dolor Sit",
+                "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+            {
+                "type": "command",
+                "title": "Amet Consectetur",
+                "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+            },
+        ]
+    elif not search_results:
+        return []
+    else:
+        return [
+            {
+                "type": "command",
+                "title": result,
+                "description": f"Description of {result}",
+            }
+            for result in search_results
+        ]
 
 
 def handle_palette_articles(query: str) -> list[dict]:
-    return [
-        {
-            "type": "article",
-            "title": f"Article: {query}",
-            "description": f"Description for article {query}",
-        }
-    ]
+    search_results = fuzzy_search(query, False, False)
+    if not search_results:
+        return []
+    else:
+        return [
+            {
+                "type": "article",
+                "title": result[:-3],
+                "description": "Description for article",
+            }
+            for result in search_results
+        ]
 
 
 ##############################################

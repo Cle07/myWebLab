@@ -21,3 +21,9 @@ Cargo.toml
 
 # Ruff
 .ruff_cache
+
+# fly
+fly.toml
+
+# Dev
+TODO.md
