@@ -1,5 +1,6 @@
-from robyn import Robyn, ALLOW_CORS
+from robyn import Robyn, ALLOW_CORS, AuthenticationHandler, Request
 from robyn.templating import JinjaTemplate
+from robyn.authentication import BearerGetter, Identity
 from urllib.parse import unquote
 from markupsafe import Markup
 import markdown as md
@@ -7,7 +8,16 @@ import pathlib
 import os
 import re
 
-# Initialisation
+# Initialisation du backend Rust
+try:
+    from backend import square
+
+    assert square(5) == 25, "Square function is not working correctly"
+    print(f"Square imported successfully. Square(5) = {square(5)}")
+except ImportError as e:
+    print(f"Failed to import square: {e}")
+
+# Initialisation du serveur Robyn
 app = Robyn(__file__)
 ALLOW_CORS(app, origins=["http://localhost:0.0.0.0/"])
 current_file_path = pathlib.Path(__file__).parent.resolve()
@@ -116,9 +126,32 @@ def lab():
     return jinja.render_template("index.html")
 
 
+@app.get("/auth", auth_required=True)
+def auth(request: Request):
+    # This route method will only be executed if the user is authenticated
+    # Otherwise, a 401 response will be returned
+    return "Hello, world"
+
+
 ##############################################
 # UTILITIES
 ##############################################
+
+
+# Hardcoded secret key for testing
+TEST_SECRET_KEY = "cleosupersecretkey-2025"
+
+
+class BasicAuthHandler(AuthenticationHandler):
+    def authenticate(self, request: Request):
+        token = self.token_getter.get_token(request)
+        # Accept the hardcoded key as a Bearer token
+        if token == TEST_SECRET_KEY:
+            return Identity(claims={"user": "cleo"})
+        return None
+
+
+app.configure_authentication(BasicAuthHandler(token_getter=BearerGetter()))
 
 
 def parse_obsidian_links(html_content: str) -> str:
@@ -229,3 +262,6 @@ def handle_palette_articles(query: str) -> list[dict]:
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.start(host="0.0.0.0", port=port)
+
+# In order to test:
+# curl -H "Authorization: Bearer cleosupersecretkey-2025" http://localhost:5000/auth

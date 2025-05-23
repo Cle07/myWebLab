@@ -5,6 +5,19 @@ build/
 dist/
 wheels/
 *.egg-info
+
 # Virtual environments
 .venv
+
+# Python compiled Rust
+*.so
+
+# Added by cargo
+/target
+
+# Because of Rust-Analyzer temp files
+Cargo.lock
+Cargo.toml
+
+# Ruff
 .ruff_cache
