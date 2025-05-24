@@ -9,9 +9,6 @@ wheels/
 # Virtual environments
 .venv
 
-# Python compiled Rust
-*.so
-
 # Added by cargo
 /target
 

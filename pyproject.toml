@@ -6,8 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "jinja2>=3.1.6",
- "markdown>=3.8",
- "passlib>=1.7.4",
- "rich>=14.0.0",
- "robyn>=0.66.2",
+    "markdown>=3.8",
+    "rich>=14.0.0",
+    "robyn>=0.66.2",
 ]

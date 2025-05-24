@@ -6,26 +6,25 @@
 
 use pyo3::prelude::*;
 use rust_fuzzy_search::fuzzy_search_best_n;
-use std::fs::{File, ReadDir};
 
 #[pyfunction]
 fn fuzzy_search(query: &str, command: bool, authenticated: bool) -> Vec<String> {
-    // This function will implement a fuzzy search for articles
     match command {
         true => {
-            let possible_commands = if authenticated {
-                vec!["logout".to_string()]
+            let possible_commands: Box<[&str]> = if authenticated {
+                Box::new(["logout"])
             } else {
-                vec!["login".to_string()]
+                Box::new(["login", "test"])
             };
-            possible_commands
+            let results = fuzzy_search_best_n(query, &possible_commands, 5);
+            results
                 .into_iter()
-                .filter(|command| command.contains(query))
+                .map(|(matched_command, _score)| matched_command.to_string())
                 .collect()
         }
         false => {
             let mut articles = Vec::new();
-            let dir: ReadDir = std::fs::read_dir("articles").unwrap();
+            let dir = std::fs::read_dir("articles").unwrap();
 
             for entry in dir {
                 let entry = entry.unwrap();
@@ -42,7 +41,6 @@ fn fuzzy_search(query: &str, command: bool, authenticated: bool) -> Vec<String> 
                 .iter()
                 .map(|article| std::fs::read_to_string(format!("articles/{}", article)).unwrap())
                 .collect();
-
             let articles_content_refs: Vec<&str> =
                 articles_content.iter().map(|s| s.as_str()).collect();
             let results = fuzzy_search_best_n(query, &articles_content_refs, 5);

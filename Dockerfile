@@ -42,14 +42,10 @@ COPY --from=build /opt/venv /opt/venv
 COPY --from=build /root/.cargo /root/.cargo
 ENV PATH="/opt/venv/bin:/root/.cargo/bin:$PATH"
 
-# Configure Rust default toolchain
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
-    /root/.cargo/bin/rustup default stable
-
-# Copy built application
+# Copy built application and pre-compiled Rust code
 COPY --from=build /app /app
 
-# Start the Robyn server with debug flags
+# Start the Robyn server without compiling Rust, compiled code must be present.
 EXPOSE 5000
 ENV PORT=5000
-CMD ["python", "-m", "robyn", "app.py", "--log-level", "WARN", "--compile-rust-path", ".", "--fast"]
+CMD ["python", "-m", "robyn", "app.py", "--log-level", "WARN", "--fast", "--disable-openapi"]

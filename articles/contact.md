@@ -1,1 +1,1 @@
-You may [contact me](https://x.com/bergsonienne).
+You may [contact me on X](https://x.com/bergsonienne).

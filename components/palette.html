@@ -14,8 +14,7 @@
     }
 }" @click="open = !open" @click.away="open = false; query = ''">
     <div id="input-container">
-        <input type="text" placeholder="Tap your search term or use : to use commands..." x-model="query"
-            @input="search">
+        <input type="text" placeholder="Search a term or use : to use commands..." x-model="query" @input="search">
         <svg id="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="9" cy="9" r="7" stroke="#4f8fe6" stroke-width="2" />
             <line x1="14" y1="14" x2="19" y2="19" stroke="#4f8fe6" stroke-width="2" />

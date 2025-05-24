@@ -1,19 +1,23 @@
-from robyn import Robyn, ALLOW_CORS, AuthenticationHandler, Request
-from robyn.templating import JinjaTemplate
-from robyn.authentication import BearerGetter, Identity
+# Standard library imports
+import os
+import pathlib
+import re
+from time import perf_counter
 from urllib.parse import unquote
+
+# Third-party library imports
+from robyn import Robyn, ALLOW_CORS, AuthenticationHandler, Request
+from robyn.authentication import BearerGetter, Identity
+from robyn.templating import JinjaTemplate
 from markupsafe import Markup
+import markdown as md
 from rich.panel import Panel
 from rich import print
-import markdown as md
-import pathlib
 
-
-import os
-import re
 
 # Initialisation et test du backend Rust
 try:
+    tstart = perf_counter()
     from backend import fuzzy_search
 
     fuzzy_search_test_results = fuzzy_search("jhana", False, False)
@@ -24,10 +28,11 @@ try:
     assert fuzzy_search_logged_out_test_commands[0] == "login"
     assert fuzzy_search_logged_in_test_commands[0] == "logout"
 
-    # Create a success panel with rich to display the test results
     print(
         "\n",
         Panel.fit(
+            "\n[bold][uu]Testing time :[/uu][/bold]\n\n"
+            f" 🕒[yellow] {perf_counter() - tstart:.4f} seconds\n[/yellow]"
             "\n[bold][uu]Fuzzysearch tests results :[/uu][/bold]\n\n"
             f"✅ [bold]Search test results:[/bold] {fuzzy_search_test_results}\n"
             f"✅ [bold]Logged out test commands:[/bold] {fuzzy_search_logged_out_test_commands}\n"
@@ -250,19 +255,19 @@ def handle_palette_commands(query: str) -> list[dict]:
     if command == "suggestions":
         return [
             {
-                "type": "command",
-                "title": "Lorem Ipsum",
-                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "type": "article",
+                "title": "about",
+                "description": "What is this place ?",
+            },
+            {
+                "type": "article",
+                "title": "contact",
+                "description": "If you need me.",
             },
             {
                 "type": "command",
-                "title": "Dolor Sit",
-                "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            },
-            {
-                "type": "command",
-                "title": "Amet Consectetur",
-                "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+                "title": ":login",
+                "description": "Connect to private lab components. Usage : :login <YOUR_KEY>",
             },
         ]
     elif not search_results:
